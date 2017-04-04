@@ -60,7 +60,7 @@ let options = fs.readFileSync(filename)
 // split using \r and \n because of windows filesystem
 
 options.pop();
-console.log(options);
+// console.log(options);
 
 class CookieFactory {
   static create(options) {
@@ -71,13 +71,13 @@ class CookieFactory {
     for (let i = 0 ; i < options.length ; i++) {
       // disect the options
       let temp = options[i].split(" = ")
-      console.log(temp);
+      // console.log(temp);
 
       let type = temp[0];
       let ing = temp[1].split(', ');
 
       // get the ingredients
-      console.log(ing)
+      // console.log(ing)
       // let ing_obj =;
       // let name = "";
       // let amount = "";
@@ -89,12 +89,12 @@ class CookieFactory {
         let name = ing_split[1];
         let amount = ing_split[0];
         let has_sugar = (name == 'sugar') ? true : false;
-        console.log(`name= ${name} | amount = ${amount} | has_sugar= ${has_sugar}`);
+        // console.log(`name= ${name} | amount = ${amount} | has_sugar= ${has_sugar}`);
         let ing_obj = new Ingredients({name: name, amount: amount, has_sugar: has_sugar})
         ingredients_arr.push(ing_obj);
       }
 
-      console.log(ingredients_arr);
+      // console.log(ingredients_arr);
 
       if(type == "chocolate chip") {
         let c = new ChocolateChip({name: type, ingredients: ingredients_arr});
@@ -113,11 +113,37 @@ class CookieFactory {
   }
 
   // other methods
-  static CookieRecommendation(day, cookies_arr) {
-    
+  static cookieRecommendation(day, cookies_arr) {
+    if(day == 'tuesday') {
+      // find sugar free cookie
+      let no_sugar_arr = [];
+      for (let i = 0 ; i < cookies_arr.length ; i++) {
+        let has_sugar = false;
+        for (let j = 0 ; j < cookies_arr[i].ingredients.length ; j++) {
+          if (cookies_arr[i].ingredients[j].has_sugar == true) {
+            // console.log(`${cookies_arr[i].ingredients[j].name}`)
+            has_sugar = true;
+          }
+        }
+        if (!has_sugar)
+          no_sugar_arr.push(cookies_arr[i]);
+
+      }
+
+      return no_sugar_arr;
+    }
+
+
   }
 }
 
 
 let batch_of_cookies = CookieFactory.create(options);
 console.log(batch_of_cookies);
+
+let sugarFreeFoods = CookieFactory.cookieRecommendation('tuesday', batch_of_cookies);
+console.log("sugar free cookies are :");
+
+for (let i = 0 ; i < sugarFreeFoods.length ; i++) {
+  console.log(sugarFreeFoods[i].name);
+}
