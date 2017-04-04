@@ -1,5 +1,14 @@
 "use strict"
 
+class Ingredients {
+  constructor (param) {
+    this.name = param['name'];
+    this.amount = param['amount'];
+    this.has_sugar = param['has_sugar'];
+  }
+
+}
+
 class Cookie {
   constructor (param) {
     this.name = "Unknown";
@@ -41,13 +50,13 @@ class OtherCookie extends Cookie {
 
 
 var fs = require('fs');
-let filename = 'cookies.txt';
+let filename = 'cookie_with_ing.txt';
 let options = fs.readFileSync(filename)
 .toString()
 .split("\r\n");
 // split using \r and \n because of windows filesystem
 
-
+options.pop();
 console.log(options);
 
 class CookieFactory {
@@ -55,15 +64,40 @@ class CookieFactory {
     // accepts a lit of cookie types and returns those cookies
     let batch = [];
 
+
     for (let i = 0 ; i < options.length ; i++) {
-      if(options[i] == "chocolate chip") {
-        let c = new ChocolateChip({name: options[i]});
+      // disect the options
+      let temp = options[i].split(" = ")
+      console.log(temp);
+
+      let type = temp[0];
+      let ing = temp[1].split(', ');
+
+      // get the ingredients
+      console.log(ing)
+      // let ing_obj =;
+      let name = "";
+      let amount = "";
+      let has_sugar = false;
+
+      for (let j = 0 ; j < ing.length ; j++) {
+        let ing_split = ing[j].split(' : ');
+        name = ing_split[1];
+        amount = ing_split[0];
+        has_sugar = (name == 'sugar') ? true : false;
+        console.log(`name= ${name} | amount = ${amount} | has_sugar= ${has_sugar}`);
+      }
+
+      if(type == "chocolate chip") {
+
+
+        let c = new ChocolateChip({name: type});
         batch.push(c);
-      } else if (options[i] == "peanut butter") {
-        let c = new PeanutButter({name: options[i]});
+      } else if (type == "peanut butter") {
+        let c = new PeanutButter({name: type});
         batch.push(c);
-      } else {
-        let c = new OtherCookie({name: options[i]});
+      } else if (type.length > 0 ) {
+        let c = new OtherCookie({name: type});
         batch.push(c);
       }
 
