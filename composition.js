@@ -119,6 +119,12 @@ class CookieFactory {
       let no_sugar_arr = [];
       for (let i = 0 ; i < cookies_arr.length ; i++) {
         let has_sugar = false;
+
+        // let cookie = cookies_arr[i]
+        // let contain_sugar = []
+        // cookie.ingredients.filter( ing => if(ing.has_sugar){ contain_sugar.push(ing)} )
+        
+
         for (let j = 0 ; j < cookies_arr[i].ingredients.length ; j++) {
           if (cookies_arr[i].ingredients[j].has_sugar == true) {
             // console.log(`${cookies_arr[i].ingredients[j].name}`)
