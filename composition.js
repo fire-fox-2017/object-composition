@@ -18,6 +18,9 @@ class Cookie {
     this.status = "mentah";
 
     this.ingredients = [];
+    if(param && param.hasOwnProperty('ingredients'))
+      this.ingredients = param['ingredients'];
+
   }
 
   bake() {
@@ -27,7 +30,7 @@ class Cookie {
 
 class PeanutButter extends Cookie {
   constructor (args) {
-    super({name: args['name']});
+    super({name: args['name'], ingredients: args['ingredients']});
     this.peanut_count = 100;
   }
 }
@@ -35,14 +38,14 @@ class PeanutButter extends Cookie {
 
 class ChocolateChip extends Cookie {
   constructor (args) {
-    super({name: args['name']});
+    super({name: args['name'], ingredients: args['ingredients']});
     this.choc_chip_count = 200;
   }
 }
 
 class OtherCookie extends Cookie {
   constructor (args) {
-    super({name: args['name']});
+    super({name: args['name'], ingredients: args['ingredients']});
     this.other_count = 150;
   }
 }
@@ -76,28 +79,31 @@ class CookieFactory {
       // get the ingredients
       console.log(ing)
       // let ing_obj =;
-      let name = "";
-      let amount = "";
-      let has_sugar = false;
+      // let name = "";
+      // let amount = "";
+      // let has_sugar = false;
+      let ingredients_arr = [];
 
       for (let j = 0 ; j < ing.length ; j++) {
         let ing_split = ing[j].split(' : ');
-        name = ing_split[1];
-        amount = ing_split[0];
-        has_sugar = (name == 'sugar') ? true : false;
+        let name = ing_split[1];
+        let amount = ing_split[0];
+        let has_sugar = (name == 'sugar') ? true : false;
         console.log(`name= ${name} | amount = ${amount} | has_sugar= ${has_sugar}`);
+        let ing_obj = new Ingredients({name: name, amount: amount, has_sugar: has_sugar})
+        ingredients_arr.push(ing_obj);
       }
 
+      console.log(ingredients_arr);
+
       if(type == "chocolate chip") {
-
-
-        let c = new ChocolateChip({name: type});
+        let c = new ChocolateChip({name: type, ingredients: ingredients_arr});
         batch.push(c);
       } else if (type == "peanut butter") {
-        let c = new PeanutButter({name: type});
+        let c = new PeanutButter({name: type, ingredients: ingredients_arr});
         batch.push(c);
       } else if (type.length > 0 ) {
-        let c = new OtherCookie({name: type});
+        let c = new OtherCookie({name: type, ingredients: ingredients_arr});
         batch.push(c);
       }
 
@@ -107,6 +113,9 @@ class CookieFactory {
   }
 
   // other methods
+  static CookieRecommendation(day, cookies_arr) {
+    
+  }
 }
 
 
