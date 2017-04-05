@@ -1,6 +1,7 @@
 // Read file containing cookies list
 const fs = require("fs");
-let cookiesList = fs.readFileSync("cookies.txt").toString().toLowerCase().match(/\w+\s?\w+/ig);
+let cookiesList = fs.readFileSync("cookies.txt").toString().toLowerCase().split("\n");
+cookiesList.pop();
 let ingredientsList = fs.readFileSync("ingredients.txt").toString().toLowerCase().split("\n");
 
 // Object containing ingredients for all types of cookie
@@ -136,11 +137,27 @@ class PeanutButter extends Cookie {
   }
 }
 
+class PeanutButterCrumbled extends Cookie {
+  constructor(ingredients) {
+    super(ingredients);
+    this.name = "peanut butter crumbled";
+    this.peanutCount = 200;
+  }
+}
+
 class ChocolateChip extends Cookie {
   constructor(ingredients) {
     super(ingredients);
     this.name = "chocolate chip";
     this.chocChipCount = 200;
+  }
+}
+
+class ChocolateChipCrumbled extends Cookie {
+  constructor(ingredients) {
+    super(ingredients);
+    this.name = "chocolate chip crumbled";
+    this.chocChipCount = 400;
   }
 }
 
@@ -168,8 +185,14 @@ class CookieFactory {
       if (/peanut\s?butter/i.test(options[i])) {
         let peanutButter = new PeanutButter(peanuteButterIngredient);
         createdCookies.push(peanutButter);
+      } else if (/peanut\s?butter\s?crumbled/i.test(options[i])) {
+        let peanutButter = new PeanutButterCrumbled(peanuteButterIngredient);
+        createdCookies.push(peanutButter);
       } else if (/chocolate\s?chips?/i.test(options[i])) {
         let chocolateChip = new ChocolateChip(chocolateChipIngredient);
+        createdCookies.push(chocolateChip);
+      } else if (/chocolate\s?chips?\s?\crumbled/i.test(options[i])) {
+        let chocolateChip = new ChocolateChipCrumbled(chocolateChipIngredient);
         createdCookies.push(chocolateChip);
       } else if (/chocolate\s?cheese/i.test(options[i])) {
         let chocolateCheese = new ChocolateCheese(chocolateCheeseIngredient);
@@ -202,10 +225,12 @@ class CookieFactory {
 
 }
 
+
+// Driver Code
 let batchOfCookies = CookieFactory.create(cookiesList);
 console.log(batchOfCookies);
 let sugarFreeCookies = CookieFactory.cookieRecommendation("tuesday", batchOfCookies);
-console.log("Sugar free cookies are: ");
+console.log("\nSugar free cookies are: ");
 for (let i = 0; i < sugarFreeCookies.length; i++) {
   console.log(sugarFreeCookies[i].name);
 }
