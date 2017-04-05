@@ -135,11 +135,8 @@ class PeanutButter extends Cookie {
     this.name = "peanut butter";
     this.peanutCount = 100;
   }
-}
 
-class PeanutButterCrumbled extends Cookie {
-  constructor(ingredients) {
-    super(ingredients);
+  crumbled() {
     this.name = "peanut butter crumbled";
     this.peanutCount = 200;
   }
@@ -151,11 +148,8 @@ class ChocolateChip extends Cookie {
     this.name = "chocolate chip";
     this.chocChipCount = 200;
   }
-}
 
-class ChocolateChipCrumbled extends Cookie {
-  constructor(ingredients) {
-    super(ingredients);
+  crumbled() {
     this.name = "chocolate chip crumbled";
     this.chocChipCount = 400;
   }
@@ -184,12 +178,15 @@ class CookieFactory {
     for (let i = 0; i < options.length; i++) {
       if (/peanut\s?butter/i.test(options[i])) {
         let peanutButter = new PeanutButter(peanuteButterIngredient);
-        createdCookies.push(peanutButter);
-      } else if (/peanut\s?butter\s?crumbled/i.test(options[i])) {
-        let peanutButter = new PeanutButterCrumbled(peanuteButterIngredient);
+        if (/crumbled/.test(options[i])) {
+          peanutButter.crumbled();
+        }
         createdCookies.push(peanutButter);
       } else if (/chocolate\s?chips?/i.test(options[i])) {
         let chocolateChip = new ChocolateChip(chocolateChipIngredient);
+        if (/crumbled/.test(options[i])) {
+          chocolateChip.crumbled();
+        }
         createdCookies.push(chocolateChip);
       } else if (/chocolate\s?chips?\s?\crumbled/i.test(options[i])) {
         let chocolateChip = new ChocolateChipCrumbled(chocolateChipIngredient);
