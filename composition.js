@@ -13,7 +13,6 @@ class Inggredient{
 class CookieFactory{
 	 static create(options){
 		let listCookie = options.split('\n');
-		// let cookies;
 		let pisahResep;
 		let data;
 		let arrCookie = []
@@ -46,29 +45,36 @@ class CookieFactory{
 			}
 
 			arrCookie.push(data);
-
 			//return cookies;
 		}
 		return arrCookie;
 	}
 
 
-	static noSugar(batch_of_cookies){
+	static cookieRecommendation(hari, batch_of_cookies){
 		let arrCookieTanpaGula=[]
+		let semuaCookie = []
 		let sugar = true;
 		for(let i=0;i<batch_of_cookies.length;i++){
 			sugar=true;
 			for(let j=0;j<batch_of_cookies[i].ingredients.length;j++){
-				if(batch_of_cookies[i].ingredients[j].name.toLowerCase() == 'sugar')
-				{
+				if(batch_of_cookies[i].ingredients[j].name.toLowerCase() == 'sugar'){
 					sugar = false;
 				}
 			}
 			if(sugar == true){
 				arrCookieTanpaGula.push(batch_of_cookies[i])
 			}
+			semuaCookie.push(batch_of_cookies[i])
 		}
-		return arrCookieTanpaGula;
+
+		if(hari == 'tuesday'){
+			return JSON.stringify(arrCookieTanpaGula, null, 2);
+		}
+		else{
+			return JSON.stringify(semuaCookie, null, 2)
+		}
+
 	}
 }
 
@@ -80,9 +86,6 @@ class Cookie{
 		this.ingredients=inggredient;
 	}
 
-	bake(){
-		this.status = "selesai dimasak";
-	}
 }
 
 class PeanutButter extends Cookie{
@@ -108,12 +111,9 @@ class OtherCookie extends Cookie{
 
 
 let options = fs.readFileSync('cookies.txt', 'utf8');
-// versi 1
-// let cookie = new CookieFactory()
-// let batch_of_cookies = cookie.create(options);
 
 let batch_of_cookies = CookieFactory.create(options);
-console.log(batch_of_cookies[0]);
+console.log(JSON.stringify(batch_of_cookies[0], "-", 2));
 
-console.log('\nCOOKIE TANPA GULA');
-console.log(CookieFactory.noSugar(batch_of_cookies));
+// console.log('\nCOOKIE RECOMENDATION');
+// console.log(CookieFactory.cookieRecommendation("tuesday", batch_of_cookies));
