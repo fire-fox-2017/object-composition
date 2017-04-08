@@ -141,9 +141,6 @@ class Cookie {
 
   }
 
-  bake() {
-    this.status = "baked";
-  }
 }
 
 class PeanutButter extends Cookie {
