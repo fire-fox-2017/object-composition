@@ -4,10 +4,7 @@ const fs = require('fs');
 let options = fs.readFileSync('cookies.txt').toString().split('\n');
 // console.log(options[0].split(', '))
 
-let rawIngredientContainer = [];
-let newIngredients = [];
-let cookieNameContainer = [];
-let cookieContainer = [];
+
 
 class Cookie {
   constructor(components) {
@@ -47,6 +44,11 @@ class OtherCookie extends Cookie {
 class CookieFactory {
 
   static create(options) {
+    let rawIngredientContainer = [];
+    let newIngredients = [];
+    let cookieNameContainer = [];
+    let cookieContainer = [];
+    
     for(let i = 0; i < cookieNameContainer.length; i++) {
       switch(cookieNameContainer[i]) {
         case 'peanut butter':
