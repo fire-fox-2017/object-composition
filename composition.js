@@ -1,146 +1,118 @@
-"use strict"
-
+'use strict'
 const fs = require('fs');
 
-// console.log(options[0].split(', '))
-
-
-
+//release 0
 class Cookie {
-  constructor(components) {
-    this.name = components.name;
+  constructor(name) {
+    this.name = name;
     this.status = "mentah";
   }
 
-  bake() {
+  bake(){
     this.status = "selesai dimasak";
   }
 }
 
-class PeanutButter extends Cookie {
-  constructor(name) {
+class PeanutButter extends Cookie{
+  constructor(name, ingredients) {
     super(name);
+    this.ingredients = ingredients;
     this.peanut_count = 100;
-    this.ingredient = new Ingredient();
-  }
-} 
-
-class ChocolateChip extends Cookie {
-  constructor(name) {
-    super(name)
-    this.choc_chip_count = 200;
-    this.ingredient = new Ingredient();
   }
 }
 
-class OtherCookie extends Cookie {
-  constructor(name) {
-    super(name)
+class ChocolateChip extends Cookie{
+  constructor(name, ingredients) {
+    super(name);
+    this.ingredients = ingredients;
+    this.choc_chip_count = 200;
+  }
+}
+
+class OtherCookies extends Cookie{
+  constructor(name, ingredients) {
+    super(name);
+    this.ingredients = ingredients;
     this.other_count = 150;
-    this.ingredient = new Ingredient();
   }
 }
 
 class CookieFactory {
-  constructor() {
-    this.cookiesIngredientData = fs.readFileSync('cookies.txt').toString().split('\n');
-    this.rawIngredientContainer = [];
-    this.newIngredients = [];
-    this.cookieNameContainer = [];
-    this.cookieContainer = [];
-    this.ingredientAmountContainer = [];
-  }
+  static create(options){
+    let ingredientsData = fs.readFileSync('cookies.txt', 'utf-8')
+                .split('\n')
+                .map((element)=>{return element.split(' =')});
 
-  create() {
-    let cookiesIngredientData = this.cookiesIngredientData;
-    this.changeEqualSign();
-    this.checkCookieName();
-    // this.extractIngredient();
+    let cookieNames = [];
+    let cookieIngredients = [];
+    for(let i=0; i<ingredientsData.length; i++){
+      cookieNames.push(ingredientsData[i][0]);
+      cookieIngredients.push(ingredientsData[i][1]);
+    }
+    let cookieIngredientsContainer = cookieIngredients.map((element)=>{return element.split(',')}); // 2d array of ingredient for each cookie
 
-    for(let i = 0; i < this.cookieNameContainer.length; i++) {
-      switch(this.cookieNameContainer[i]) {
-        case 'peanut butter':
-          this.cookieContainer.push(new PeanutButter({'name': `${this.cookieNameContainer[i]}`}));
-          break;
-        case 'chocolate chip':
-          this.cookieContainer.push(new ChocolateChip({'name': `${this.cookieNameContainer[i]}`}));
-          break;
-        default:
-          this.cookieContainer.push(new OtherCookie({'name': `${this.cookieNameContainer[i]}`}));
+    let arring = cookieIngredientsContainer.map((elem)=>{return elem.map((ingred)=>{return ingred.split(' : ')})});
+
+    let objIngred = [];
+    for(let i=0; i<arring.length; i++){
+      let tmp = [];
+      for(let j=0; j<arring[i].length; j++){
+        tmp.push(new Ingredients(arring[i][j][1],arring[i][j][0]));
+      }
+      objIngred.push(tmp);
+    }
+
+    let cookiesWithIngredient = []; // berisi arr of obj dengan property 'ingredient' berbentuk arr berisi obj class Ingredients
+    for(let i=0; i<cookieNames.length; i++){
+      if(cookieNames[i] == 'peanut butter'){
+        cookiesWithIngredient.push(new PeanutButter('peanut butter', objIngred[i]));
+      } else if (cookieNames[i] ==  'chocolate chip'){
+        cookiesWithIngredient.push(new ChocolateChip('chocolate chip', objIngred[i]));
+      } else if (i==2 || i==3){
+        cookiesWithIngredient.push(new OtherCookies(cookieNames[i], objIngred[i]));
       }
     }
+    return cookiesWithIngredient;
 
-    for(let i = 0; i < this.rawIngredientContainer.length; i++) {
-      let newArr = this.rawIngredientContainer[i].split(', ');
-      // newArr.splice(0, 1);
-      this.newIngredients.push(newArr)
-    }
-    
-    for(let i = 0; i < this.newIngredients.length; i++) {
-      for(let j = 0; j < this.newIngredients[i].length; j++) {
-        let regexForAmount = /\d \w+/;
-        this.ingredientAmountContainer = regexForAmount.exec(this.newIngredients[i][j]);
+  }
+
+  static cookieRecommendation(day, cookiesWithIngredient){
+    let cookiesData = this.create();
+    let freeSugarCookies = [];
+    if(day !== 'tuesday'){
+      console.log(JSON.stringify(pabrikKue, null, 2)); // stringify supaya enak diliat di terminal
+    } else {
+      for(let i = 0; i < cookiesData.length; i++){
+        for(let j = 0; j <cookiesData[i].ingredients.length; j++){
+          // console.log('------ing:', cookiesData[i].ingredients[j].name);
+          if(cookiesData[i].ingredients[j].name !== 'sugar'){
+            freeSugarCookies.push(cookiesData[i]);
+          } else {
+            freeSugarCookies = [];
+            j = cookiesData[i].ingredients.length;
+          }
+        }
       }
+      console.log(JSON.stringify(freeSugarCookies[0],null,2));
     }
-
-  }
-
-
-
-  changeEqualSign() {
-    let regex = /\ =/g;
-    for(let i = 0; i < this.cookiesIngredientData.length; i++) {
-      let test = this.cookiesIngredientData[i].replace(regex, ',');
-      this.rawIngredientContainer.push(test);
-    }
-  }
-  
-  checkCookieName() {
-    for(let i = 0; i < this.rawIngredientContainer.length; i++) {
-      let arrayOfCookies = this.rawIngredientContainer[i].split(', ');
-      this.cookieNameContainer.push(arrayOfCookies[0]);
-    }
-  }
-
-  extractIngredient() {
-    let regex = /(\: )(\w+)/g;
-    for(let i = 0; i < this.newIngredients.length; i++) {
-      for(let j = 0; j < this.newIngredients[i].length; j++) {
-        // hilangkan : dan spasi
-        //extract string
-      }
-    }
-  }
-
-}
-
-class Ingredient {
-  constructor(options) {
-    this.name = options.name
-    this.amount = options.amount
-    this.has_sugar = options.sugar
   }
 }
 
+class Ingredients {
+  constructor(name, amount) {
+    this.name = name;
+    this.amount = amount;
+  }
+}
 
-// console.log(this.cookieNameContainer)
-// console.log(this.rawIngredientContainer[0].split(', '))
-// console.log(this.rawIngredientContainer)
+let options = fs.readFileSync('cookies.txt', 'utf-8').split('\n');
 
-// console.log(this.cookieContainer)
 
-// peanut butter, 1 cup : flour, 2 cups (gluten) : sugar, 2 cups : peanut butter, 1 cup : cinnamon, 2 tsp : butter
+let pabrikKue = CookieFactory.create(options);
+console.log('ini return nya cookiefactory create method:');
+console.log(JSON.stringify(pabrikKue, null, 2));
 
-let pabrikKue = new CookieFactory();
-pabrikKue.create();
-
-// console.log(pabrikKue.rawIngredientContainer[0].split(','))
-
-console.log(pabrikKue.newIngredients)
-console.log(pabrikKue.ingredientAmountContainer)
-// console.log(pabrikKue.cookieNameContainer)
-// console.log(pabrikKue.cookieContainer)
-
-// console.log(pabrikKue)
-// console.log(this.cookieContainer)
-// console.log(this.rawIngredientContainer[0].split(', ').shift())
+// let sugarFreeFoods = CookieFactory.cookieRecommendation("sunday", pabrikKue)
+console.log("========sugar free cakes are=======");
+CookieFactory.cookieRecommendation("tuesday", pabrikKue);
+// console.log(sugarFreeFoods);
