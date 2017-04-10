@@ -77,8 +77,8 @@ class CookieFactory {
       kumpBahan = options[i].slice(options[i].indexOf('=')+1,options[i].length).split(",");
       let dataIngredient=[];
       for(let j=0;j<kumpBahan.length;j++){
-      dataIngredient.push({name:kumpBahan[j].slice(kumpBahan[j].indexOf(':')+2,kumpBahan[j].length),amount: kumpBahan[j].slice(1,kumpBahan[j].indexOf(':')-1),has_sugar:/sugar/.test(options[i])});
-
+      dataIngredient.push(new Ingredient({name:kumpBahan[j].slice(kumpBahan[j].indexOf(':')+2,kumpBahan[j].length),amount: kumpBahan[j].slice(1,kumpBahan[j].indexOf(':')-1),has_sugar:/sugar/.test(options[i])}));
+      // dataIngredient.push();
 
         // console.log(dataIngredient[j]);
 
@@ -129,7 +129,7 @@ let listData = fs.readFileSync('cookies2.txt').toString().split("\n");
 // console.log(listData);
 
 let batch_of_cookies = CookieFactory.create(listData);
-console.log(batch_of_cookies);
+console.log(JSON.stringify(batch_of_cookies,null,2));
 
 let sugarFreeFoods = CookieFactory.cookieRecommendation("tuesday", batch_of_cookies);
 console.log("sugar free cakes are :");
