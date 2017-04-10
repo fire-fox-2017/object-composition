@@ -11,20 +11,8 @@ class Ingredients {
 
 class Cookie {
   constructor (param) {
-    this.name = "Unknown";
-    if(param && param.hasOwnProperty('name'))
     this.name = param['name'];
-
-    this.status = "mentah";
-
-    this.ingredients = [];
-    if(param && param.hasOwnProperty('ingredients'))
     this.ingredients = param['ingredients'];
-
-  }
-
-  bake() {
-    this.status = "selesai dimasak";
   }
 }
 
