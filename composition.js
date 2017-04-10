@@ -89,7 +89,7 @@ class CookieFactory {
 
 //driver's code
 let batch_of_cookies = CookieFactory.create(options);
-console.log(batch_of_cookies)
+console.log(JSON.stringify(batch_of_cookies,null,2))
 console.log(batch_of_cookies[0].ingredients[0])
 console.log(batch_of_cookies[0].ingredients[1])
 console.log(batch_of_cookies[0].ingredients[2])
